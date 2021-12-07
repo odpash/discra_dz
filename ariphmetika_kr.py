@@ -100,13 +100,13 @@ def question_five_1(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b
 def question_five_2(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b, from_mnsh, from_mnsh_2, mnsh_2):
     if zn_a == '0':
         from_mnsh_2 = '1' + from_mnsh_2[1::]
-
+    else:
+        from_mnsh_2 = '0' + from_mnsh_2[1::]
     answer = f"A: {a_2}; [-A]: {a_inverted_2}\n"
     answer += f"B: {b_2}; [-B]: {b_inverted_2}\n"
     schp = '00000000'
     answer += f'\n#{0}, SCHP: {schp}, MNSH: {mnsh}'
     time_a_zn = zn_a
-    print(mnsh)
     if mnsh[-1] == '0':
         if zn_a == '1':
             schp = '0' + from_mnsh[1::]
@@ -118,7 +118,6 @@ def question_five_2(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b
         else:
             schp = from_mnsh_2
         time_a_zn = change_zn(time_a_zn)
-    print(schp)
     prev_prev_act = mnsh[-1]
     mnsh = schp[-1] + mnsh[:-1]
     schp = time_a_zn + schp[:-1]
@@ -135,6 +134,8 @@ def question_five_2(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b
             if zn_a == '0' and zn_b == '1' or zn_a == '1' and zn_b == '0':
                 time_a_zn = change_zn(time_a_zn)
         elif prev_prev_act == '0' and prev_operation == '1':
+            if zn_a == '0' and zn_b == '1' or zn_a == '1' and zn_b == '0':
+                time_a_zn = change_zn(time_a_zn)
             schp, _, _ = plus(schp, from_mnsh_2)
             time_a_zn = change_zn(zn_a)
         mnsh = schp[-1] + mnsh[:-1]
@@ -149,30 +150,47 @@ def question_five_2(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b
 
 
 def question_five(a, b):  # Умножение
-    a_2, b_2 = calculator('10', '2', str(a)), calculator('10', '2', str(b))
-    zn_a, zn_b = znak_2_base(a_2), znak_2_base(b_2)
-    a_2 = a_2.replace('-', '')
-    b_2 = b_2.replace('-', '')
-    a_2 = zn_a + normalize_digit(a_2)
-    b_2 = zn_b + normalize_digit(b_2)
-    a_inverted_2 = invertor(a_2)
-    b_inverted_2 = invertor(b_2)
-    a_inverted_2, _, _ = plus(a_inverted_2, (len(a_inverted_2) - 1) * '0' + '1')
-    b_inverted_2, _, _ = plus(b_inverted_2, (len(b_inverted_2) - 1) * '0' + '1')
+    a = abs(a)
+    b = abs(b)
+    sp = [[a, b], [a, -b], [-a, b], [-a, -b]]
+    answer = ''
+    for i in range(4):
+        a, b = sp[i][0], sp[i][1]
+        data_a_b = ''
+        if a >= 0:
+            data_a_b += "A > 0"
+        else:
+            data_a_b += "A < 0"
+        if b >= 0:
+            data_a_b += " B > 0"
+        else:
+            data_a_b += " B < 0"
 
-    if zn_b == '0':
-        mnsh = b_2
-        mnsh_2 = b_inverted_2
-    else:
-        mnsh = b_inverted_2
-        mnsh_2 = b_2
-    if zn_a == '0':
-        from_mnsh = a_2
-        from_mnsh_2 = a_inverted_2
-    else:
-        from_mnsh = a_inverted_2
-        from_mnsh_2 = a_2
+        a_2, b_2 = calculator('10', '2', str(a)), calculator('10', '2', str(b))
+        zn_a, zn_b = znak_2_base(a_2), znak_2_base(b_2)
+        a_2 = a_2.replace('-', '')
+        b_2 = b_2.replace('-', '')
+        a_2 = zn_a + normalize_digit(a_2)
+        b_2 = zn_b + normalize_digit(b_2)
+        a_inverted_2 = invertor(a_2)
+        b_inverted_2 = invertor(b_2)
+        a_inverted_2, _, _ = plus(a_inverted_2, (len(a_inverted_2) - 1) * '0' + '1')
+        b_inverted_2, _, _ = plus(b_inverted_2, (len(b_inverted_2) - 1) * '0' + '1')
 
-    res = question_five_2(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b, from_mnsh, from_mnsh_2, mnsh_2)
-    return res
-print(question_five(113, -41))
+        if zn_b == '0':
+            mnsh = b_2
+            mnsh_2 = b_inverted_2
+        else:
+            mnsh = b_inverted_2
+            mnsh_2 = b_2
+        if zn_a == '0':
+            from_mnsh = a_2
+            from_mnsh_2 = a_inverted_2
+        else:
+            from_mnsh = a_inverted_2
+            from_mnsh_2 = a_2
+
+        res = f"\n\nС коррекцией, {data_a_b}:\n" + question_five_1(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b, from_mnsh, from_mnsh_2)
+        res += f"\n\nБез коррекции, {data_a_b}:\n" + question_five_2(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b, from_mnsh, from_mnsh_2, mnsh_2) + 'splitplace'
+        answer += res
+    return answer
