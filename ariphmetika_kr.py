@@ -63,41 +63,42 @@ def question_two(a, b):   # сложение
 
 
 def question_three():
-    pass
+    return materials['q3']
 
 
-def question_five_1(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b, from_mnsh, from_mnsh_2):
+def question_four_1(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b, from_mnsh, from_mnsh_2):
     answer = f"A: {a_2}; [-A]: {a_inverted_2}\n"
     answer += f"B: {b_2}; [-B]: {b_inverted_2}\n"
     schp = '00000000'
-    answer += f'\n#{0}, SCHP: {schp}, MNSH: {mnsh}'
+    answer += f'\n#{0}, СЧП: {schp}, Множитель: {mnsh}'
     schp = mnsh
     mnsh = schp[-1] + mnsh[:-1]
     schp = zn_a + from_mnsh[:-1]
 
-    answer += f'\n#{1}, SCHP: {schp}, MNSH: {mnsh}'
+    answer += f'\n#{1}, СЧП: {schp}, Множитель: {mnsh}'
     for i in range(2, 9):
         prev_operation = mnsh[-1]
         if prev_operation == '1':
             schp, _, _ = plus(schp, from_mnsh)
         mnsh = schp[-1] + mnsh[:-1]
         schp = zn_a + schp[:-1]
-        answer += f'\n#{i}, SCHP: {schp}, MNSH: {mnsh}'
+        answer += f'\n#{i}, СЧП: {schp}, Множитель: {mnsh}'
     if zn_b == '1':
         if zn_a == "0":
             from_mnsh_2 = '1' + from_mnsh_2[1::]
         else:
             from_mnsh_2 = '0' + from_mnsh_2[1::]
         schp, _, _ = plus(schp, from_mnsh_2)
-        answer += f'\n#{9}, SCHP: {schp}, MNSH: {mnsh}'
+        answer += f'\n#{9}, СЧП: {schp}, Множитель: {mnsh}'
     res = schp + mnsh
     res_10 = calculator('10', '2', str(abs(a) * abs(b)))
     point = len(res) - len(res_10) - 1
-    answer += f'\n{res} (2) = {a * b} (10)'
+    aaa = calculator("10", "2", str(a * b))
+    answer += f'\n{res} (2) = {a * b} (10) = {aaa} (2)\nОтвет - {aaa in res}'
     return answer
 
 
-def question_five_2(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b, from_mnsh, from_mnsh_2, mnsh_2):
+def question_four_2(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b, from_mnsh, from_mnsh_2, mnsh_2):
     if zn_a == '0':
         from_mnsh_2 = '1' + from_mnsh_2[1::]
     else:
@@ -105,7 +106,7 @@ def question_five_2(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b
     answer = f"A: {a_2}; [-A]: {a_inverted_2}\n"
     answer += f"B: {b_2}; [-B]: {b_inverted_2}\n"
     schp = '00000000'
-    answer += f'\n#{0}, SCHP: {schp}, MNSH: {mnsh}'
+    answer += f'\n#{0}, СЧП: {schp}, Множитель: {mnsh}'
     time_a_zn = zn_a
     if mnsh[-1] == '0':
         if zn_a == '1':
@@ -122,7 +123,7 @@ def question_five_2(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b
     mnsh = schp[-1] + mnsh[:-1]
     schp = time_a_zn + schp[:-1]
     prev_operation = prev_prev_act
-    answer += f'\n#{1}, SCHP: {schp}, MNSH: {mnsh}, {prev_prev_act} -> {prev_operation}'
+    answer += f'\n#{1}, СЧП: {schp}, Множитель: {mnsh}, {prev_prev_act} -> {prev_operation}'
     for i in range(2, 9):
         if zn_a == '0' and zn_b == '1' or zn_a == '1' and zn_b == '0' or zn_a == "1" and zn_b == "1":
             time_a_zn = change_zn(zn_a)
@@ -140,16 +141,16 @@ def question_five_2(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b
             time_a_zn = change_zn(zn_a)
         mnsh = schp[-1] + mnsh[:-1]
         schp = time_a_zn + schp[:-1]
-        answer += f'\n#{i}, SCHP: {schp}, MNSH: {mnsh}, {prev_prev_act} -> {prev_operation}'
+        answer += f'\n#{i}, СЧП: {schp}, Множитель: {mnsh}, {prev_prev_act} -> {prev_operation}'
         prev_prev_act = prev_operation
     res = schp + mnsh
     res_10 = calculator('10', '2', str(abs(a) * abs(b)))
-    point = len(res) - len(res_10) - 1
-    answer += f'\n{res} (2) = {a * b} (10) = {calculator("10", "2", str(a * b))} (10)'
+    aaa = calculator("10", "2", str(a * b))
+    answer += f'\n{res} (2) = {a * b} (10) = {aaa} (2)\nОтвет - {aaa in res}'
     return answer
 
 
-def question_five(a, b):  # Умножение
+def question_four(a, b):  # Умножение
     a = abs(a)
     b = abs(b)
     sp = [[a, b], [a, -b], [-a, b], [-a, -b]]
@@ -190,7 +191,7 @@ def question_five(a, b):  # Умножение
             from_mnsh = a_inverted_2
             from_mnsh_2 = a_2
 
-        res = f"\n\nС коррекцией, {data_a_b}:\n" + question_five_1(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b, from_mnsh, from_mnsh_2)
-        res += f"\n\nБез коррекции, {data_a_b}:\n" + question_five_2(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b, from_mnsh, from_mnsh_2, mnsh_2) + 'splitplace'
+        res = f"\n\nС коррекцией, {data_a_b}:\n" + question_four_1(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b, from_mnsh, from_mnsh_2)
+        res += f"\n\nБез коррекции, {data_a_b}:\n" + question_four_2(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b, from_mnsh, from_mnsh_2, mnsh_2) + 'splitplace'
         answer += res
     return answer
