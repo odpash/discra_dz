@@ -23,6 +23,12 @@ def znak_2_base(d: str):
         return '1'
 
 
+def change_zn(z):
+    if z == '0':
+        return '1'
+    else:
+        return '0'
+
 def invertor(base_2: str):
     ans = ''
     for i in range(len(base_2)):

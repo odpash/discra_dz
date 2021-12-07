@@ -1,5 +1,5 @@
 import json
-from calculate import calculator, znak_2_base, invertor, plus, normalize_digit
+from calculate import calculator, znak_2_base, invertor, plus, normalize_digit, change_zn
 
 
 materials = json.loads(open('materials.json', 'r', encoding="UTF-8").read())
@@ -93,40 +93,51 @@ def question_five_1(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b
     res = schp + mnsh
     res_10 = calculator('10', '2', str(abs(a) * abs(b)))
     point = len(res) - len(res_10) - 1
-    res = res[0] + '.' + res[point::]
     answer += f'\n{res} (2) = {a * b} (10)'
     return answer
 
 
-def question_five_2(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b, from_mnsh, from_mnsh_2):
+def question_five_2(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b, from_mnsh, from_mnsh_2, mnsh_2):
+    if zn_a == '0':
+        from_mnsh_2 = '1' + from_mnsh_2[1::]
+
     answer = f"A: {a_2}; [-A]: {a_inverted_2}\n"
     answer += f"B: {b_2}; [-B]: {b_inverted_2}\n"
     schp = '00000000'
     answer += f'\n#{0}, SCHP: {schp}, MNSH: {mnsh}'
-    schp = mnsh
+    time_a_zn = zn_a
+    time_b_zn = zn_b
+    if mnsh[-1] == '0':
+        schp = from_mnsh
+    else:
+        schp = from_mnsh_2
+        time_a_zn = change_zn(time_a_zn)
+    prev_prev_act = mnsh[-1]
     mnsh = schp[-1] + mnsh[:-1]
-    schp = zn_a + from_mnsh[:-1]
-
-    answer += f'\n#{1}, SCHP: {schp}, MNSH: {mnsh}'
+    schp = time_a_zn + schp[:-1]
+    prev_operation = prev_prev_act
+    answer += f'\n#{1}, SCHP: {schp}, MNSH: {mnsh}, {prev_prev_act} -> {prev_operation}'
     for i in range(2, 9):
-        prev_operation = mnsh[-1]
-        if prev_operation == '1':
-            schp, _, _ = plus(schp, from_mnsh)
-        mnsh = schp[-1] + mnsh[:-1]
-        schp = zn_a + schp[:-1]
-        answer += f'\n#{i}, SCHP: {schp}, MNSH: {mnsh}'
-    if zn_b == '1':
-        if zn_a == "0":
-            from_mnsh_2 = '1' + from_mnsh_2[1::]
+        if zn_a == '0' and zn_b == '1' or zn_a == '1' and zn_b == '0':
+            time_a_zn = change_zn(zn_a)
         else:
-            from_mnsh_2 = '0' + from_mnsh_2[1::]
-        schp, _, _ = plus(schp, from_mnsh_2)
-        answer += f'\n#{9}, SCHP: {schp}, MNSH: {mnsh}'
+            time_a_zn = zn_a
+        prev_operation = mnsh[-1]
+        if prev_prev_act == '1' and prev_operation == '0':
+            schp, _, _ = plus(schp, from_mnsh)
+            if zn_a == '0' and zn_b == '1' or zn_a == '1' and zn_b == '0':
+                time_a_zn = change_zn(time_a_zn)
+        elif prev_prev_act == '0' and prev_operation == '1':
+            schp, _, _ = plus(schp, from_mnsh_2)
+            time_a_zn = change_zn(zn_a)
+        mnsh = schp[-1] + mnsh[:-1]
+        schp = time_a_zn + schp[:-1]
+        answer += f'\n#{i}, SCHP: {schp}, MNSH: {mnsh}, {prev_prev_act} -> {prev_operation}'
+        prev_prev_act = prev_operation
     res = schp + mnsh
     res_10 = calculator('10', '2', str(abs(a) * abs(b)))
     point = len(res) - len(res_10) - 1
-    res = res[0] + '.' + res[point::]
-    answer += f'\n{res} (2) = {a * b} (10)'
+    answer += f'\n{res} (2) = {a * b} (10) = {calculator("10", "2", str(a * b))} (10)'
     return answer
 
 def question_five(a, b):  # Умножение
@@ -143,8 +154,10 @@ def question_five(a, b):  # Умножение
 
     if zn_b == '0':
         mnsh = b_2
+        mnsh_2 = b_inverted_2
     else:
         mnsh = b_inverted_2
+        mnsh_2 = b_2
     if zn_a == '0':
         from_mnsh = a_2
         from_mnsh_2 = a_inverted_2
@@ -152,6 +165,6 @@ def question_five(a, b):  # Умножение
         from_mnsh = a_inverted_2
         from_mnsh_2 = a_2
 
-    res = question_five_1(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b, from_mnsh, from_mnsh_2)
+    res = question_five_2(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b, from_mnsh, from_mnsh_2, mnsh_2)
     return res
-print(question_five(-15, -13))
+print(question_five(-113, -41))
