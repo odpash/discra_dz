@@ -29,12 +29,12 @@ def change_zn(z):
     else:
         return '0'
 
-def invertor(base_2: str):
+def invertor(base_2: str):  # 8 bits!!!!
     ans = ''
     for i in range(len(base_2)):
-        if i == 0:
-            ans += base_2[i]
-            continue
+        #if i == 0:
+        #    ans += base_2[i]
+        #    continue
         if base_2[i] == '1':
             ans += '0'
         else:
@@ -59,6 +59,7 @@ def plus(a, b):
     if zalog == 1:
         return answer[::-1], "1", AF
     return answer[::-1], "0", AF
+
 
 
 def normalize_digit(a):
