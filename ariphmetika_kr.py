@@ -195,3 +195,6 @@ def question_four(a, b):  # Умножение
         res += f"\n\nБез коррекции, {data_a_b}:\n" + question_four_2(a, b, a_2, b_2, a_inverted_2, b_inverted_2, mnsh, zn_a, zn_b, from_mnsh, from_mnsh_2, mnsh_2) + 'splitplace'
         answer += res
     return answer
+
+
+print(question_two(15553, 21364))

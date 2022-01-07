@@ -236,17 +236,17 @@ def task_six(r, s):
     except:
         return ''
 
-A = "200"
-B = "0.03"
-R = "C318FC00"
-S = "3E600000"
+A = "-27"
+B = "22.625"
+R = "3FF00000"
+S = "3FF00000"
 
 
 def main(a, b, r, s):
     ans = task_one(a) + '\n' + task_two(a) + '\n' + task_three(a, b) + '\n' + task_four(a, b) + '\n' + task_five(a, b) + '\n' + task_six(r, s)
     return ans
 
-
+print(task_six(R, S))
 #print(task_three(A, B))
 #print(task_one(A))
 #print(task_two(A))
